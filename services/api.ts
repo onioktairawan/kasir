@@ -61,6 +61,24 @@ export const api = {
 
     getCategories: (): Promise<Category[]> => apiRequest<Category[]>('/categories'),
 
+    addCategory: (categoryData: { name: string }): Promise<Category> => {
+        return apiRequest<Category>('/categories', {
+            method: 'POST',
+            body: JSON.stringify(categoryData),
+        });
+    },
+
+    updateCategory: (categoryData: Category): Promise<Category> => {
+        return apiRequest<Category>(`/categories/${categoryData.id}`, {
+            method: 'PUT',
+            body: JSON.stringify(categoryData),
+        });
+    },
+
+    deleteCategory: (categoryId: string): Promise<{ success: boolean }> => {
+        return apiRequest(`/categories/${categoryId}`, { method: 'DELETE' });
+    },
+
     addProduct: (productData: Omit<Product, 'id'>): Promise<Product> => {
         return apiRequest<Product>('/products', {
             method: 'POST',
