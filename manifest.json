@@ -3,14 +3,9 @@
   "name": "Gemini POS - Kasir Pintar",
   "icons": [
     {
-      "src": "/icons/icon-192x192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "/icons/icon-512x512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGc+CiAgICA8dGl0bGU+TG9nbzwvdGl0bGU+CiAgICA8cGF0aCBmaWxsPSIjM2I4MmY2IiBkPSJtMTAwLDE2LjY2NjY3Yy00NS43NzA4NCwwIC04My4zMzMzNCwzNy41NjI1IC04My4zMzMzNCw4My4zMzMzNGMwLDQ1Ljc3MDgzIDM3LjU2MjUsODMuMzMzMyA4My4zMzMzNCw4My4zMzMzYzQ1Ljc3MDgzLDAgODMuMzMzMywtMzcuNTYyNSA4My4zMzMzLC04My4zMzMzYzAsLTQ1Ljc3MDgzIC0zNy41NjI1LC04My4zMzMzNCAtODMuMzMzMywtODMuMzMzMzR6bTAsMTUwYy0zNi44NzUsMCAtNjYuNjY2NjYsLTI5Ljc5MTY3IC02Ni42NjY2NiwtNjYuNjY2NjdjMCwtMzYuODc1IDMwLC02Ni42NjY2NiA2Ni42NjY2NiwtNjYuNjY2NjZjMzYuODc1LDAgNjYuNjY2NywyOS43OTE2NiA2Ni42NjY3LDY2LjY2NjY2YzAsMzYuODc1IC0yOS43OTE2Nyw2Ni42NjY2NyAtNjYuNjY2Nyw2Ni42NjY2N3oiLz4KICAgIDxjaXJjbGUgZmlsbD0iIzNiODJmNiIgY3g9IjEwMCIgY3k9IjEwMCIgcj0iNTAiLz4KICA8L2c+Cjwvc3ZnPg==",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512"
     }
   ],
   "start_url": ".",
