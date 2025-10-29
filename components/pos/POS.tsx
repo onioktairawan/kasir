@@ -12,8 +12,8 @@ import { ShoppingCartIcon } from '../common/Icons';
 
 type CartAction =
   | { type: 'ADD_ITEM'; payload: Product }
-  | { type: 'REMOVE_ITEM'; payload: number }
-  | { type: 'UPDATE_QUANTITY'; payload: { id: number; quantity: number } }
+  | { type: 'REMOVE_ITEM'; payload: string }
+  | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
   | { type: 'CLEAR' };
 
 const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
@@ -83,11 +83,11 @@ const POS: React.FC = () => {
     dispatch({ type: 'ADD_ITEM', payload: product });
   }, []);
 
-  const handleCartUpdate = useCallback((id: number, quantity: number) => {
+  const handleCartUpdate = useCallback((id: string, quantity: number) => {
     dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity } });
   }, []);
 
-  const handleCartRemove = useCallback((id: number) => {
+  const handleCartRemove = useCallback((id: string) => {
     dispatch({ type: 'REMOVE_ITEM', payload: id });
   }, []);
 
