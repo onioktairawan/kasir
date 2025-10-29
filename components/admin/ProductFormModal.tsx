@@ -14,19 +14,31 @@ type ImageSource = 'upload' | 'url';
 const ProductFormModal: React.FC<ProductFormModalProps> = ({ product, onClose, onSave }) => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
-  const [categoryId, setCategoryId] = useState<number>(1);
+  const [categoryId, setCategoryId] = useState<string>('');
   const [imageUrl, setImageUrl] = useState<string>('');
   const [imageSource, setImageSource] = useState<ImageSource>('upload');
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    api.getCategories().then(setCategories);
+    api.getCategories().then(cats => {
+        setCategories(cats);
+        if (product) {
+            setCategoryId(product.category.id);
+        } else if (cats.length > 0) {
+            setCategoryId(cats[0].id);
+        }
+    });
+
     if (product) {
       setName(product.name);
       setPrice(product.price);
-      setCategoryId(product.category.id);
       setImageUrl(product.imageUrl || '');
+    } else {
+      // Reset form fields for a new product
+      setName('');
+      setPrice(0);
+      setImageUrl('');
     }
   }, [product]);
 
@@ -129,7 +141,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({ product, onClose, o
             </div>
             <div>
               <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Kategori</label>
-              <select id="category" value={categoryId} onChange={e => setCategoryId(Number(e.target.value))} required className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600">
+              <select id="category" value={categoryId} onChange={e => setCategoryId(e.target.value)} required className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600">
                 {categories.length > 0 ? categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>) : <option>Loading...</option>}
               </select>
             </div>
