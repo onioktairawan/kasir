@@ -1,7 +1,7 @@
 import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import type { Product, Category } from '../../types';
 import { api } from '../../services/api';
-import { CameraIcon, DocumentDuplicateIcon } from '../common/Icons';
+import { DocumentDuplicateIcon } from '../common/Icons';
 
 interface ProductFormModalProps {
   product: Product | null;
