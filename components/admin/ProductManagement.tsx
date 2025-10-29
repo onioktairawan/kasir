@@ -58,7 +58,6 @@ const ProductManagement: React.FC = () => {
     const reader = new FileReader();
     reader.onload = async (e) => {
       try {
-        // Fix: Replaced `UintArray` with `Uint8Array` as `UintArray` is not a valid type.
         const data = new Uint8Array(e.target?.result as ArrayBuffer);
         const workbook = XLSX.read(data, { type: 'array' });
         const sheetName = workbook.SheetNames[0];
