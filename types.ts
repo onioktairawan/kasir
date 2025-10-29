@@ -1,4 +1,3 @@
-
 export enum UserRole {
   ADMIN = 'admin',
   CASHIER = 'cashier',
@@ -19,9 +18,8 @@ export interface Product {
   id: number;
   name: string;
   price: number;
-  stock: number;
   category: Category;
-  imageUrl: string;
+  imageUrl?: string;
 }
 
 export interface CartItem extends Product {
@@ -32,27 +30,18 @@ export interface Transaction {
   id: string;
   items: CartItem[];
   subtotal: number;
-  tax: number;
-  discount: number;
   total: number;
   paymentMethod: string;
+  cashReceived: number;
+  change: number;
   timestamp: Date;
   cashier: User;
-  amountPaid: number;
-  change: number;
 }
 
 export type Theme = 'light' | 'dark';
 
 export interface SalesReportData {
-    period: string;
     totalSales: number;
     transactions: number;
-}
-
-export interface TopProductReport {
-  id: number;
-  name: string;
-  imageUrl: string;
-  quantitySold: number;
+    chartData: { date: string; sales: number }[];
 }

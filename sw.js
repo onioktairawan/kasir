@@ -1,58 +1,46 @@
 const CACHE_NAME = 'gemini-pos-cache-v1';
-// This list should include all the core files that make up the app shell.
 const urlsToCache = [
   '/',
   '/index.html',
-  '/index.tsx', // The main script
-  'https://cdn.tailwindcss.com',
-  'https://rsms.me/inter/inter.css',
-  'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
-  'https://aistudiocdn.com/react@^19.2.0',
-  'https://aistudiocdn.com/react-dom@^19.2.0',
-  'https://i.imgur.com/g00fB1b.png'
+  // Vite akan menghasilkan file JS dan CSS dengan hash, 
+  // jadi kita tidak bisa mencantumkannya di sini secara statis.
+  // Service worker akan menangkapnya saat fetch.
 ];
 
-self.addEventListener('install', (event) => {
-  // Perform install steps
+self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => {
+      .then(cache => {
         console.log('Opened cache');
-        const cachePromises = urlsToCache.map(urlToCache => {
-            return cache.add(urlToCache).catch(err => {
-                console.warn(`Failed to cache ${urlToCache}:`, err);
-            });
-        });
-        return Promise.all(cachePromises);
+        return cache.addAll(urlsToCache);
       })
   );
 });
 
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
-      .then((response) => {
+      .then(response => {
         // Cache hit - return response
         if (response) {
           return response;
         }
 
-        const fetchRequest = event.request.clone();
-
-        return fetch(fetchRequest).then(
-          (response) => {
+        return fetch(event.request).then(
+          response => {
             // Check if we received a valid response
-            if (!response || response.status !== 200) {
-               if (response.type !== 'opaque') { // opaque responses are for no-cors requests to 3rd party cdn. they have status 0
-                 return response;
-               }
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
             }
 
-
+            // IMPORTANT: Clone the response. A response is a stream
+            // and because we want the browser to consume the response
+            // as well as the cache consuming the response, we need
+            // to clone it so we have two streams.
             const responseToCache = response.clone();
 
             caches.open(CACHE_NAME)
-              .then((cache) => {
+              .then(cache => {
                 cache.put(event.request, responseToCache);
               });
 
@@ -63,13 +51,12 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', event => {
   const cacheWhitelist = [CACHE_NAME];
-
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.map((cacheName) => {
+        cacheNames.map(cacheName => {
           if (cacheWhitelist.indexOf(cacheName) === -1) {
             return caches.delete(cacheName);
           }

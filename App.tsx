@@ -69,13 +69,13 @@ const App: React.FC = () => {
           {!user ? (
             <LoginScreen />
           ) : (
-            <>
+            <div>
               {user.role === UserRole.ADMIN ? (
                 <AdminDashboard />
               ) : (
                 <POS />
               )}
-            </>
+            </div>
           )}
         </div>
       </ThemeContext.Provider>

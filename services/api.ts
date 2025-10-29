@@ -1,105 +1,212 @@
-import type { User, Product, Category, Transaction, SalesReportData, CartItem, TopProductReport } from '../types';
+import type { User, Product, Category, Transaction, SalesReportData, CartItem } from '../types';
+import { UserRole } from '../types';
 
-// Base URL untuk API. Saat pengembangan, ini akan di-proxy.
-const API_BASE_URL = ''; 
+const mockUsers: User[] = [
+  { id: 1, username: 'admin', role: UserRole.ADMIN },
+  { id: 2, username: 'kasir1', role: UserRole.CASHIER },
+];
 
-// Helper function untuk menangani respons dari fetch
-const handleResponse = async (response: Response) => {
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'Terjadi kesalahan pada server' }));
-    throw new Error(error.message);
-  }
-  return response.json();
+const mockCategories: Category[] = [
+  { id: 1, name: 'Makanan' },
+  { id: 2, name: 'Minuman' },
+];
+
+let mockProducts: Product[] = [];
+
+let mockTransactions: Transaction[] = [];
+
+// Generate realistic mock transactions for the last year
+const generateMockTransactions = () => {
+    if (mockProducts.length === 0) return; // Don't generate if no products
+    const today = new Date();
+    for (let i = 0; i < 365; i++) {
+        const date = new Date();
+        date.setDate(today.getDate() - i);
+
+        // More transactions on weekends
+        const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+        const transactionCount = Math.floor(Math.random() * (isWeekend ? 25 : 10));
+
+        for (let j = 0; j < transactionCount; j++) {
+            const cart: CartItem[] = [];
+            const itemCount = Math.floor(Math.random() * 5) + 1;
+            let subtotal = 0;
+
+            for (let k = 0; k < itemCount; k++) {
+                const product = mockProducts[Math.floor(Math.random() * mockProducts.length)];
+                const quantity = Math.floor(Math.random() * 3) + 1;
+                cart.push({ ...product, quantity });
+                subtotal += product.price * quantity;
+            }
+
+            const total = subtotal;
+            const cashReceived = total + Math.floor(Math.random() * 50000);
+            const change = cashReceived - total;
+            
+            const transactionHour = Math.floor(Math.random() * (22-8) + 8); // 8 AM to 10 PM
+            date.setHours(transactionHour, Math.floor(Math.random() * 60));
+
+            mockTransactions.push({
+                id: `TRX-${date.getTime()}-${j}`,
+                items: cart,
+                subtotal,
+                total,
+                paymentMethod: 'Cash',
+                cashReceived,
+                change,
+                timestamp: new Date(date),
+                cashier: mockUsers[1],
+            });
+        }
+    }
 };
 
+generateMockTransactions();
+
+
+const simulateDelay = <T,>(data: T): Promise<T> =>
+  new Promise(resolve => setTimeout(() => resolve(data), 500));
 
 export const api = {
   login: async (username: string, pin: string): Promise<User | null> => {
-    // Di backend, Anda akan memvalidasi username dan pin/password
-    // Untuk saat ini, kita akan melewati login sungguhan dan mengasumsikan berhasil
-    // jika backend mengembalikan pengguna.
-    // Ini adalah contoh, idealnya Anda menggunakan POST dengan body
-    const response = await fetch(`${API_BASE_URL}/api/users?username=${username}`);
-    const users: User[] = await handleResponse(response);
-    // Logika login sederhana, backend seharusnya menangani ini dengan lebih aman
-    return users.length > 0 ? users[0] : null;
+    console.log(`Attempting login for user: ${username} with PIN: ${pin}`);
+    const user = mockUsers.find(u => u.username === username);
+    return simulateDelay(user || null);
   },
 
   getProducts: async (): Promise<Product[]> => {
-    const response = await fetch(`${API_BASE_URL}/api/products`);
-    return handleResponse(response);
+    return simulateDelay(mockProducts);
   },
   
   getCategories: async (): Promise<Category[]> => {
-    const response = await fetch(`${API_BASE_URL}/api/categories`);
-    return handleResponse(response);
+    return simulateDelay(mockCategories);
   },
 
   addProduct: async (productData: Omit<Product, 'id'>): Promise<Product> => {
-    const response = await fetch(`${API_BASE_URL}/api/products`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(productData),
-    });
-    return handleResponse(response);
+    const newProduct: Product = {
+      ...productData,
+      id: Math.max(0, ...mockProducts.map(p => p.id)) + 1,
+    };
+    mockProducts.push(newProduct);
+    return simulateDelay(newProduct);
+  },
+
+  addMultipleProducts: async (productsData: Omit<Product, 'id'>[]): Promise<{ success: boolean, count: number }> => {
+    let currentMaxId = Math.max(0, ...mockProducts.map(p => p.id));
+    const newProducts: Product[] = productsData.map((p, index) => ({
+      ...p,
+      id: currentMaxId + 1 + index,
+    }));
+    mockProducts.push(...newProducts);
+    return simulateDelay({ success: true, count: newProducts.length });
   },
 
   updateProduct: async (productData: Product): Promise<Product> => {
-    const response = await fetch(`${API_BASE_URL}/api/products/${productData.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(productData),
-    });
-    return handleResponse(response);
+    mockProducts = mockProducts.map(p => p.id === productData.id ? productData : p);
+    return simulateDelay(productData);
   },
 
   deleteProduct: async (productId: number): Promise<{ success: boolean }> => {
-    await fetch(`${API_BASE_URL}/api/products/${productId}`, {
-      method: 'DELETE',
-    });
-    return { success: true }; // Asumsikan sukses jika tidak ada error
+    mockProducts = mockProducts.filter(p => p.id !== productId);
+    return simulateDelay({ success: true });
   },
 
-  createTransaction: async (cart: CartItem[], cashier: User, amountPaid: number, discount: number): Promise<Transaction> => {
+  createTransaction: async (cart: CartItem[], cashier: User, cashReceived: number): Promise<Transaction> => {
     const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const total = subtotal - discount;
+    const total = subtotal;
+    const change = cashReceived - total;
 
-    const transactionData = {
-        items: cart,
-        cashierId: cashier.id,
-        amountPaid,
-        discount,
-        subtotal,
-        total,
-        // Properti lain akan dihitung dan diatur oleh backend
+    const newTransaction: Transaction = {
+      id: `TRX-${Date.now()}`,
+      items: cart,
+      subtotal,
+      total,
+      paymentMethod: 'Cash',
+      cashReceived,
+      change,
+      timestamp: new Date(),
+      cashier,
     };
     
-    const response = await fetch(`${API_BASE_URL}/api/transactions`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(transactionData),
-    });
-
-    const newTransaction: Transaction = await handleResponse(response);
-
-    // Logging di frontend bisa dipertahankan jika masih diinginkan
-    console.log('--- NEW TRANSACTION LOG (from Backend) ---');
-    console.log(`ID: ${newTransaction.id}`);
-    console.log(`Time: ${new Date(newTransaction.timestamp).toLocaleString()}`);
-    console.log(`Cashier: ${newTransaction.cashier.username}`);
-    // ... log lainnya
-    console.log('------------------------------------------');
-    
-    return newTransaction;
+    mockTransactions.push(newTransaction);
+    return simulateDelay(newTransaction);
   },
   
-  getSalesReport: async (period: 'daily' | 'weekly' | 'monthly'): Promise<SalesReportData[]> => {
-      const response = await fetch(`${API_BASE_URL}/api/reports/sales?period=${period}`);
-      return handleResponse(response);
+  getSalesReport: async (startDate: Date, endDate: Date): Promise<SalesReportData> => {
+      const filteredTransactions = mockTransactions.filter(t => {
+          const timestamp = t.timestamp;
+          return timestamp >= startDate && timestamp <= endDate;
+      });
+
+      const totalSales = filteredTransactions.reduce((sum, t) => sum + t.total, 0);
+      const transactions = filteredTransactions.length;
+
+      const dailyData: { [key: string]: number } = {};
+      
+      const dateCursor = new Date(startDate);
+      while(dateCursor <= endDate) {
+          dailyData[dateCursor.toISOString().split('T')[0]] = 0;
+          dateCursor.setDate(dateCursor.getDate() + 1);
+      }
+
+      filteredTransactions.forEach(t => {
+          const dateKey = t.timestamp.toISOString().split('T')[0];
+          if(dailyData[dateKey] !== undefined) {
+              dailyData[dateKey] += t.total;
+          }
+      });
+      
+      const chartData = Object.keys(dailyData).map(date => ({
+          date: date,
+          sales: dailyData[date]
+      }));
+
+      return simulateDelay({
+          totalSales,
+          transactions,
+          chartData
+      });
   },
 
-  getTopProductsReport: async (period: '3d' | '7d' | '30d'): Promise<TopProductReport[]> => {
-    const response = await fetch(`${API_BASE_URL}/api/reports/topproducts?period=${period}`);
-    return handleResponse(response);
+  getTopSellingProducts: async (startDate: Date, endDate: Date): Promise<{ product: Product; quantity: number; revenue: number }[]> => {
+      const filteredTransactions = mockTransactions.filter(t => {
+          const timestamp = t.timestamp;
+          return timestamp >= startDate && timestamp <= endDate;
+      });
+
+      const productSales: { [key: number]: { quantity: number; revenue: number } } = {};
+
+      filteredTransactions.forEach(t => {
+          t.items.forEach(item => {
+              if (!productSales[item.id]) {
+                  productSales[item.id] = { quantity: 0, revenue: 0 };
+              }
+              productSales[item.id].quantity += item.quantity;
+              productSales[item.id].revenue += item.price * item.quantity;
+          });
+      });
+
+      const sortedProducts = Object.keys(productSales)
+          .map(id => ({
+              productId: Number(id),
+              ...productSales[Number(id)],
+          }))
+          .sort((a, b) => b.quantity - a.quantity);
+
+      const topProducts = sortedProducts.map(p => ({
+          product: mockProducts.find(mp => mp.id === p.productId)!,
+          quantity: p.quantity,
+          revenue: p.revenue,
+      }));
+
+      return simulateDelay(topProducts.slice(0, 10)); // Return top 10
+  },
+
+  getTransactions: async (startDate: Date, endDate: Date): Promise<Transaction[]> => {
+      const filtered = mockTransactions.filter(t => {
+          const timestamp = t.timestamp;
+          return timestamp >= startDate && timestamp <= endDate;
+      }).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()); // Sort by most recent
+      return simulateDelay(filtered);
   },
 };

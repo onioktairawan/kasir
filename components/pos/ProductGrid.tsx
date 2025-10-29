@@ -1,7 +1,7 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import type { Product, Category } from '../../types';
 import { api } from '../../services/api';
+import { DocumentDuplicateIcon } from '../common/Icons';
 
 interface ProductGridProps {
   products: Product[];
@@ -15,10 +15,15 @@ const ProductCard: React.FC<{ product: Product; onAddToCart: (product: Product) 
     className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 cursor-pointer flex flex-col"
     onClick={() => onAddToCart(product)}
   >
-    <img src={product.imageUrl} alt={product.name} className="w-full h-40 object-cover" />
+    <div className="w-full h-40 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+      {product.imageUrl ? (
+        <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+      ) : (
+        <DocumentDuplicateIcon className="w-16 h-16 text-gray-400 dark:text-gray-500" />
+      )}
+    </div>
     <div className="p-4 flex flex-col flex-grow">
       <h3 className="text-lg font-semibold text-gray-800 dark:text-white flex-grow">{product.name}</h3>
-      <p className="text-sm text-gray-500 dark:text-gray-400">Stok: {product.stock}</p>
       <p className="text-xl font-bold text-primary-600 dark:text-primary-400 mt-2">
         {product.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
       </p>
@@ -88,7 +93,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products, onAddToCart, onSear
         </div>
       ) : (
         <div className="text-center py-16">
-            <p className="text-gray-500 dark:text-gray-400">Produk tidak ditemukan.</p>
+            <p className="text-gray-500 dark:text-gray-400">Belum ada produk. Silakan tambahkan di halaman Admin.</p>
         </div>
       )}
     </div>
