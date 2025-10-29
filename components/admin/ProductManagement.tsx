@@ -39,7 +39,7 @@ const ProductManagement: React.FC = () => {
     handleCloseModal();
   };
 
-  const handleDelete = async (productId: number) => {
+  const handleDelete = async (productId: string) => {
     if (window.confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
       await api.deleteProduct(productId);
       await fetchProducts();
