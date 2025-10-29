@@ -25,11 +25,6 @@ const LoginScreen: React.FC = () => {
     }
   };
 
-  const quickLogin = (user: string, p: string) => {
-    setUsername(user);
-    setPin(p);
-  }
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-lg dark:bg-gray-800">
@@ -79,14 +74,6 @@ const LoginScreen: React.FC = () => {
             </button>
           </div>
         </form>
-         <div className="text-sm text-center text-gray-500 dark:text-gray-400">
-            <p>Untuk Demo:</p>
-            <div className="flex justify-center gap-4 mt-2">
-                <button onClick={() => quickLogin('admin', '1234')} className="font-medium text-primary-600 hover:text-primary-500">Login Admin</button>
-                <span>|</span>
-                <button onClick={() => quickLogin('kasir1', '1111')} className="font-medium text-primary-600 hover:text-primary-500">Login Kasir</button>
-            </div>
-        </div>
       </div>
     </div>
   );
