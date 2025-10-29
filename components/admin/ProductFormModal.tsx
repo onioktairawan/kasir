@@ -18,28 +18,44 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({ product, onClose, o
   const [imageUrl, setImageUrl] = useState<string>('');
   const [imageSource, setImageSource] = useState<ImageSource>('upload');
   const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // For form submission
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [categoriesError, setCategoriesError] = useState<string | null>(null);
 
   useEffect(() => {
-    api.getCategories().then(cats => {
-        setCategories(cats);
-        if (product) {
-            setCategoryId(product.category.id);
-        } else if (cats.length > 0) {
-            setCategoryId(cats[0].id);
-        }
-    });
-
     if (product) {
       setName(product.name);
       setPrice(product.price);
       setImageUrl(product.imageUrl || '');
     } else {
-      // Reset form fields for a new product
       setName('');
       setPrice(0);
       setImageUrl('');
     }
+
+    setCategoriesLoading(true);
+    setCategoriesError(null);
+    api.getCategories()
+      .then(cats => {
+        setCategories(cats);
+        if (cats.length === 0) {
+          setCategoriesError('Tidak ada kategori. Tambahkan dulu di backend.');
+        } else {
+          if (product) {
+            setCategoryId(product.category.id);
+          } else {
+            setCategoryId(cats[0].id);
+          }
+        }
+      })
+      .catch(error => {
+        console.error("Failed to fetch categories:", error);
+        setCategoriesError('Gagal memuat kategori.');
+      })
+      .finally(() => {
+        setCategoriesLoading(false);
+      });
+
   }, [product]);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -55,6 +71,10 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({ product, onClose, o
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (categoriesError) {
+        alert("Tidak bisa menyimpan produk karena kategori tidak dapat dimuat.");
+        return;
+    }
     setLoading(true);
     const selectedCategory = categories.find(c => c.id === categoryId);
     if (!selectedCategory) {
@@ -141,8 +161,21 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({ product, onClose, o
             </div>
             <div>
               <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Kategori</label>
-              <select id="category" value={categoryId} onChange={e => setCategoryId(e.target.value)} required className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600">
-                {categories.length > 0 ? categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>) : <option>Loading...</option>}
+              <select 
+                id="category" 
+                value={categoryId} 
+                onChange={e => setCategoryId(e.target.value)} 
+                required 
+                disabled={categoriesLoading || !!categoriesError}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 disabled:bg-gray-200 dark:disabled:bg-gray-700/50"
+              >
+                {categoriesLoading ? (
+                  <option>Loading...</option>
+                ) : categoriesError ? (
+                  <option>{categoriesError}</option>
+                ) : (
+                  categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)
+                )}
               </select>
             </div>
             <div>
@@ -154,7 +187,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({ product, onClose, o
             <button type="button" onClick={onClose} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500">
               Batal
             </button>
-            <button type="submit" disabled={loading} className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:bg-primary-300">
+            <button type="submit" disabled={loading || !!categoriesError} className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:bg-primary-300">
               {loading ? 'Menyimpan...' : 'Simpan'}
             </button>
           </div>
