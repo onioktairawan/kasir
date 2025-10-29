@@ -56,7 +56,7 @@ export const ShoppingCartIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props)
 
 export const PrinterIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.061RGAsYWFyY2hfaWQ9ImRkZWI4YjJlLTRlZjMtNDM5YS05N2YxLTFhMTg4ZDYyYzY5MiZhbGciPSJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcGkuZGlkLm5ldHdvcmtAZ29vZ2xlLmNvbSIsImF1ZCI6Imh0dHBzOi8vd3d3Lmdvb2dsZWFwaXMuY29tL29hdXRoMi92NC90b2tlbiIsImlhdCI6MTcyMTE0NjcxNSwiZXhwIjoxNzIxMTUwMzE1LCJzdWIiOiIyMjU5MDk3OTI5ODU0MDUzOTI4MDQifQ.5J6a44mI3-d2d4l7-k2z3r7p6w8f0d8w3l7c9f8l7c3r4d6t8f9e2k9m7p9w4z3m2m9k8w" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.061A2.25 2.25 0 0021 15.75V9.528a2.25 2.25 0 00-2.25-2.25h-1.141A2.25 2.25 0 0015 5.028V5.028a2.25 2.25 0 00-2.25-2.25H11.25A2.25 2.25 0 009 5.028v.001A2.25 2.25 0 006.75 7.278H5.609A2.25 2.25 0 003.359 9.528v6.222c0 .994.704 1.83 1.641 2.076" />
   </svg>
 );
 
