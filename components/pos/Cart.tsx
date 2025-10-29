@@ -5,8 +5,8 @@ import { PlusIcon, MinusIcon, TrashIcon, XMarkIcon } from '../common/Icons';
 
 interface CartProps {
   items: CartItem[];
-  onUpdate: (id: number, quantity: number) => void;
-  onRemove: (id: number) => void;
+  onUpdate: (id: string, quantity: number) => void;
+  onRemove: (id: string) => void;
   onClear: () => void;
   onCheckout: () => void;
   onClose: () => void;
