@@ -1,7 +1,7 @@
 import type { User, Product, Category, Transaction, SalesReportData, CartItem } from '../types';
 import { UserRole } from '../types';
 
-const mockUsers: (User & { pin: string })[] = [
+let mockUsers: (User & { pin: string })[] = [
   { id: 1, username: 'admin', role: UserRole.ADMIN, pin: '1234' },
   { id: 2, username: 'kasir1', role: UserRole.CASHIER, pin: '1111' },
 ];
@@ -77,6 +77,54 @@ export const api = {
       return simulateDelay(userToReturn);
     }
     return simulateDelay(null);
+  },
+  
+  getUsers: async (): Promise<User[]> => {
+    const usersToReturn = mockUsers.map(u => {
+      const { pin, ...user } = u;
+      return user;
+    });
+    return simulateDelay(usersToReturn);
+  },
+
+  addUser: async (userData: Omit<User, 'id'> & { pin: string }): Promise<User> => {
+    if (!userData.pin) throw new Error("PIN is required for a new user.");
+
+    const newUser: User & { pin: string } = {
+      ...userData,
+      id: Math.max(0, ...mockUsers.map(u => u.id)) + 1,
+    };
+    mockUsers.push(newUser);
+    const { pin, ...userToReturn } = newUser;
+    return simulateDelay(userToReturn);
+  },
+
+  updateUser: async (userData: User & { pin?: string }): Promise<User> => {
+    mockUsers = mockUsers.map(u => {
+      if (u.id === userData.id) {
+        return {
+          ...u,
+          username: userData.username,
+          role: userData.role,
+          pin: userData.pin ? userData.pin : u.pin, // Update pin only if provided
+        };
+      }
+      return u;
+    });
+    const { pin, ...userToReturn } = userData;
+    return simulateDelay(userToReturn);
+  },
+
+  deleteUser: async (userId: number): Promise<{ success: boolean }> => {
+    const userToDelete = mockUsers.find(u => u.id === userId);
+    if (userToDelete?.role === UserRole.ADMIN) {
+        const adminCount = mockUsers.filter(u => u.role === UserRole.ADMIN).length;
+        if (adminCount <= 1) {
+            throw new Error("Tidak dapat menghapus admin terakhir.");
+        }
+    }
+    mockUsers = mockUsers.filter(u => u.id !== userId);
+    return simulateDelay({ success: true });
   },
 
   getProducts: async (): Promise<Product[]> => {
