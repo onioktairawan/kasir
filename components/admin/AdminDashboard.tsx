@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import ProductManagement from './ProductManagement';
 import Reports from './Reports';
 import UserMenu from '../common/UserMenu';
-import { Bars3Icon, ChartPieIcon, TagIcon, ArchiveBoxIcon } from '../common/Icons';
+import { Bars3Icon, ChartPieIcon, TagIcon, ArchiveBoxIcon, UsersIcon } from '../common/Icons';
 import TransactionHistory from './TransactionHistory';
+import UserManagement from './UserManagement';
 
-type AdminView = 'products' | 'reports' | 'history';
+type AdminView = 'products' | 'reports' | 'history' | 'users';
 
 const AdminDashboard: React.FC = () => {
   const [currentView, setCurrentView] = useState<AdminView>('reports');
@@ -36,6 +37,7 @@ const AdminDashboard: React.FC = () => {
         <div className="space-y-4">
           <NavItem view="reports" label="Laporan" icon={<ChartPieIcon className="w-6 h-6" />} />
           <NavItem view="products" label="Produk" icon={<TagIcon className="w-6 h-6" />} />
+          <NavItem view="users" label="Pengguna" icon={<UsersIcon className="w-6 h-6" />} />
           <NavItem view="history" label="Riwayat" icon={<ArchiveBoxIcon className="w-6 h-6" />} />
         </div>
         <div className="mt-auto">
@@ -61,6 +63,7 @@ const AdminDashboard: React.FC = () => {
             {currentView === 'products' && <ProductManagement />}
             {currentView === 'reports' && <Reports />}
             {currentView === 'history' && <TransactionHistory />}
+            {currentView === 'users' && <UserManagement />}
         </main>
       </div>
 
