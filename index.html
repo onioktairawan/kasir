@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#3b82f6" />
     <link rel="manifest" href="/manifest.json" />
-    <title>kasir Tes</title>
+    <title>Kasir Pintar</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -27,23 +27,19 @@
         :root { font-family: 'Inter var', sans-serif; }
       }
       @media print {
+        /* Sembunyikan semua elemen di halaman secara default */
         body * {
           visibility: hidden;
         }
+        /* Tampilkan HANYA elemen struk dan semua isinya */
         #receipt-to-print, #receipt-to-print * {
           visibility: visible;
         }
+        /* Posisikan struk di pojok kiri atas halaman cetak */
         #receipt-to-print {
           position: absolute;
           left: 0;
           top: 0;
-          width: 100%;
-          transform: scale(1.1); /* Slightly enlarge for better readability on paper */
-          transform-origin: top left;
-        }
-        /* Hide modal overlays during print */
-        .fixed.inset-0.z-50 {
-          display: none !important;
         }
       }
     </style>
