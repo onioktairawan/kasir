@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { api } from '../../services/api';
 import type { SalesReportData, Product } from '../../types';
 import { ChevronDownIcon } from '../common/Icons';
+import SalesActivityChart from './SalesActivityChart'; // Import komponen baru
 
 type FilterType = 'today' | 'last7' | 'last30' | 'custom';
 type TopProduct = { product: Product; quantity: number; revenue: number };
@@ -132,6 +133,21 @@ const Reports: React.FC = () => {
             </div>
         </div>
       )}
+
+      {/* -- START: Bagian Baru -- */}
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Aktivitas Penjualan</h3>
+        {loading ? (
+            <div className="h-48 flex items-center justify-center bg-gray-100 dark:bg-gray-700/50 rounded-md">
+                <p className="text-gray-500">Memuat grafik...</p>
+            </div>
+        ) : reportData && reportData.chartData.length > 0 ? (
+            <SalesActivityChart data={reportData.chartData} />
+        ) : (
+            <p className="text-center text-gray-500 dark:text-gray-400 py-8">Tidak ada aktivitas penjualan pada periode ini.</p>
+        )}
+      </div>
+      {/* -- END: Bagian Baru -- */}
 
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
         <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Produk Terlaris</h3>
