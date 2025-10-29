@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import ProductManagement from './ProductManagement';
 import Reports from './Reports';
 import UserMenu from '../common/UserMenu';
-import { Bars3Icon, ChartPieIcon, TagIcon, ArchiveBoxIcon, UsersIcon } from '../common/Icons';
+import { Bars3Icon, ChartPieIcon, TagIcon, ArchiveBoxIcon, UsersIcon, FolderIcon } from '../common/Icons';
 import TransactionHistory from './TransactionHistory';
 import UserManagement from './UserManagement';
+import CategoryManagement from './CategoryManagement';
 
-type AdminView = 'products' | 'reports' | 'history' | 'users';
+type AdminView = 'products' | 'reports' | 'history' | 'users' | 'categories';
 
 const AdminDashboard: React.FC = () => {
   const [currentView, setCurrentView] = useState<AdminView>('reports');
@@ -33,10 +34,11 @@ const AdminDashboard: React.FC = () => {
           isSidebarVisible ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <h1 className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-8">Admin Panel</h1>
+        <h1 className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-8">Admin POS</h1>
         <div className="space-y-4">
           <NavItem view="reports" label="Laporan" icon={<ChartPieIcon className="w-6 h-6" />} />
           <NavItem view="products" label="Produk" icon={<TagIcon className="w-6 h-6" />} />
+          <NavItem view="categories" label="Kategori" icon={<FolderIcon className="w-6 h-6" />} />
           <NavItem view="users" label="Pengguna" icon={<UsersIcon className="w-6 h-6" />} />
           <NavItem view="history" label="Riwayat" icon={<ArchiveBoxIcon className="w-6 h-6" />} />
         </div>
@@ -64,6 +66,7 @@ const AdminDashboard: React.FC = () => {
             {currentView === 'reports' && <Reports />}
             {currentView === 'history' && <TransactionHistory />}
             {currentView === 'users' && <UserManagement />}
+            {currentView === 'categories' && <CategoryManagement />}
         </main>
       </div>
 
