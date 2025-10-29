@@ -39,7 +39,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({ product, onClose, o
       .then(cats => {
         setCategories(cats);
         if (cats.length === 0) {
-          setCategoriesError('Tidak ada kategori. Tambahkan dulu di backend.');
+          setCategoriesError("Belum ada kategori. Tambah dulu di menu 'Kategori'.");
         } else {
           if (product) {
             setCategoryId(product.category.id);
