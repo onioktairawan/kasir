@@ -53,7 +53,7 @@ export const api = {
         });
     },
 
-    deleteUser: (userId: number): Promise<{ success: boolean }> => {
+    deleteUser: (userId: string): Promise<{ success: boolean }> => {
         return apiRequest(`/users/${userId}`, { method: 'DELETE' });
     },
 
@@ -82,7 +82,7 @@ export const api = {
         });
     },
 
-    deleteProduct: (productId: number): Promise<{ success: boolean }> => {
+    deleteProduct: (productId: string): Promise<{ success: boolean }> => {
         return apiRequest(`/products/${productId}`, { method: 'DELETE' });
     },
 
