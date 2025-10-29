@@ -135,7 +135,7 @@ const POS: React.FC = () => {
   return (
     <div className="h-screen bg-gray-100 dark:bg-gray-900 font-sans flex flex-col overflow-hidden">
         <header className="flex justify-between items-center p-4 bg-white dark:bg-gray-800 shadow-md z-20">
-          <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-white">Gemini POS</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-white">Kasir POS</h1>
           <UserMenu />
         </header>
 
