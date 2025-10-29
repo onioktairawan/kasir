@@ -1,13 +1,13 @@
 import type { User, Product, Category, Transaction, SalesReportData, CartItem } from '../types';
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = '/api';
 
 const handleResponse = async <T>(response: Response): Promise<T> => {
     if (!response.ok) {
         const error = await response.json().catch(() => ({ message: 'An unknown error occurred' }));
         throw new Error(error.message || `HTTP error! status: ${response.status}`);
     }
-    // Handle cases where the response might be empty (e.g., successful delete with 204 No Content)
+    // Handle cases where the response might be empty (e.g., successful delete with 24 No Content)
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.indexOf("application/json") !== -1) {
         return response.json() as Promise<T>;
