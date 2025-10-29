@@ -20,7 +20,6 @@ const Reports: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const { startDate, endDate } = useMemo(() => {
-    // FIX: Changed 'end' from const to let to allow reassignment.
     let end = new Date();
     end.setHours(23, 59, 59, 999);
     let start = new Date();
