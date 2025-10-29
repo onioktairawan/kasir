@@ -4,18 +4,18 @@ export enum UserRole {
 }
 
 export interface User {
-  id: number;
+  id: string;
   username: string;
   role: UserRole;
 }
 
 export interface Category {
-  id: number;
+  id: string;
   name: string;
 }
 
 export interface Product {
-  id: number;
+  id: string;
   name: string;
   price: number;
   category: Category;
