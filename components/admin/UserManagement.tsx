@@ -42,7 +42,7 @@ const UserManagement: React.FC = () => {
     handleCloseModal();
   };
 
-  const handleDelete = async (userId: number) => {
+  const handleDelete = async (userId: string) => {
     if (window.confirm('Apakah Anda yakin ingin menghapus pengguna ini?')) {
       try {
         await api.deleteUser(userId);
