@@ -1,9 +1,9 @@
 import type { User, Product, Category, Transaction, SalesReportData, CartItem } from '../types';
 import { UserRole } from '../types';
 
-const mockUsers: User[] = [
-  { id: 1, username: 'admin', role: UserRole.ADMIN },
-  { id: 2, username: 'kasir1', role: UserRole.CASHIER },
+const mockUsers: (User & { pin: string })[] = [
+  { id: 1, username: 'admin', role: UserRole.ADMIN, pin: '1234' },
+  { id: 2, username: 'kasir1', role: UserRole.CASHIER, pin: '1111' },
 ];
 
 const mockCategories: Category[] = [
@@ -70,8 +70,13 @@ const simulateDelay = <T,>(data: T): Promise<T> =>
 export const api = {
   login: async (username: string, pin: string): Promise<User | null> => {
     console.log(`Attempting login for user: ${username} with PIN: ${pin}`);
-    const user = mockUsers.find(u => u.username === username);
-    return simulateDelay(user || null);
+    const user = mockUsers.find(u => u.username === username && u.pin === pin);
+    if (user) {
+      // Don't send the pin back to the client
+      const { pin, ...userToReturn } = user;
+      return simulateDelay(userToReturn);
+    }
+    return simulateDelay(null);
   },
 
   getProducts: async (): Promise<Product[]> => {
